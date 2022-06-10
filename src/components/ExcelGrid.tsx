@@ -4,6 +4,7 @@ import React from "react";
 import { useRecoilValue } from "recoil";
 import styled from "styled-components";
 import { excelFields, FieldExcelType } from "../const/excel";
+import { isFirstColumn } from "../libs/aggid";
 import { choiceTablePattern } from "../store/excel.store";
 
 interface ExcelGridProps {
@@ -13,7 +14,7 @@ interface ExcelGridProps {
 const defaultColDef: ColDef = {
   filter: true,
   sortable: true,
-  checkboxSelection: true,
+  checkboxSelection: isFirstColumn,
 };
 
 const ExcelGrid: React.FC<ExcelGridProps> = ({ data }) => {
