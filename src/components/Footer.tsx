@@ -8,7 +8,7 @@ const Footer: React.FC<{ className: string }> = ({ className }) => {
         className + " p-1 d-flex justify-content-center align-item-center"
       }
     >
-      <span>Provide by @me</span>
+      <span>ГТО @gto</span>
     </StyledFooter>
   );
 };

@@ -1,8 +1,10 @@
 import { ColDef } from "ag-grid-community";
 import { AgGridReact } from "ag-grid-react";
 import React from "react";
+import { useRecoilValue } from "recoil";
 import styled from "styled-components";
 import { excelFields, FieldExcelType } from "../const/excel";
+import { choiceTablePattern } from "../store/excel.store";
 
 interface ExcelGridProps {
   data: Record<string, string>[];
@@ -11,6 +13,7 @@ interface ExcelGridProps {
 const defaultColDef: ColDef = {
   filter: true,
   sortable: true,
+  checkboxSelection: true,
 };
 
 const ExcelGrid: React.FC<ExcelGridProps> = ({ data }) => {
@@ -22,32 +25,37 @@ const ExcelGrid: React.FC<ExcelGridProps> = ({ data }) => {
   //   [data]
   // );
 
+  const choiceExcelPattern = useRecoilValue(choiceTablePattern);
+  const colDefs = React.useMemo(() => {
+    return Object.values(excelFields)
+      .map((val) => {
+        if (
+          choiceExcelPattern === "potm" &&
+          ![FieldExcelType.GENERAL_INFO, FieldExcelType.ESTIMATE].includes(
+            val.cellClass as FieldExcelType
+          )
+        ) {
+          return null;
+        }
+
+        const colDef: ColDef = {
+          ...val,
+          tooltipField: val.field,
+        };
+
+        return colDef;
+      })
+      .filter((val): val is ColDef => val !== null);
+  }, [choiceExcelPattern]);
+
   return (
     <AgGridWrapper className="h-100 w-100 ag-theme-material">
       <AgGridReact
         className="h-100 w-100"
+        rowSelection="multiple"
         rowData={data}
         defaultColDef={defaultColDef}
-        columnDefs={Object.values(excelFields).map((val) => {
-          const colDef: ColDef = {
-            ...val,
-            tooltipField: val.field,
-          };
-
-          // if (
-          //   val.filter === AgGridFilter.SELECT &&
-          //   val.field === excelFields[ExcelFieldName.CITY].field
-          // ) {
-          //   colDef.filterParams = {
-          //     // newRowsAction: "keep",
-          //     // suppressRemoveEntries: true,
-          //     values: cities,
-          //   };
-          //   console.log(colDef);
-          // }
-
-          return colDef;
-        })}
+        columnDefs={colDefs}
       />
     </AgGridWrapper>
   );

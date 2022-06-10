@@ -1,17 +1,22 @@
 import React from "react";
+import { useRecoilValue } from "recoil";
+import { setRecoil } from "recoil-nexus";
 import styled from "styled-components";
+import { choiceTablePattern } from "../store/excel.store";
 
 const Sidebar: React.FC<{
   className?: string;
   isOpen: boolean;
   setIsOpen: (newVal: boolean) => unknown;
 }> = ({ className, isOpen, setIsOpen }) => {
+  const choiceExcelPattern = useRecoilValue(choiceTablePattern);
+
   return (
     <StyledSidebar className={className}>
       {isOpen ? (
-        <SidebarContent onClick={() => setIsOpen(false)}>
+        <SidebarContent>
           <div className="w-100 d-flex justify-content-between p-2">
-            <div>тут будет сайдбар</div>
+            <h4>Настройка таблицы</h4>
             <StyledClose className="d-flex" onClick={() => setIsOpen(false)}>
               <svg
                 fill="#000000"
@@ -23,6 +28,37 @@ const Sidebar: React.FC<{
                 <path d="M 4.7070312 3.2929688 L 3.2929688 4.7070312 L 10.585938 12 L 3.2929688 19.292969 L 4.7070312 20.707031 L 12 13.414062 L 19.292969 20.707031 L 20.707031 19.292969 L 13.414062 12 L 20.707031 4.7070312 L 19.292969 3.2929688 L 12 10.585938 L 4.7070312 3.2929688 z" />
               </svg>
             </StyledClose>
+          </div>
+          <div className="px-2">
+            <h5>Шаблоны:</h5>
+
+            <RadioWrapper
+              className="p-2 px-3 mb-1"
+              onClick={() => setRecoil(choiceTablePattern, null)}
+            >
+              <input
+                type="radio"
+                className="me-2"
+                id="excelChoice1"
+                name="contact"
+                checked={choiceExcelPattern === null}
+              />
+              <label htmlFor="excelChoice1">Все поля</label>
+            </RadioWrapper>
+
+            <RadioWrapper
+              className="p-2 px-3"
+              onClick={() => setRecoil(choiceTablePattern, "potm")}
+            >
+              <input
+                type="radio"
+                className="me-2"
+                id="excelChoice2"
+                name="contact"
+                checked={choiceExcelPattern === "potm"}
+              />
+              <label htmlFor="excelChoice2">Оценки</label>
+            </RadioWrapper>
           </div>
         </SidebarContent>
       ) : (
@@ -38,6 +74,13 @@ const Sidebar: React.FC<{
     </StyledSidebar>
   );
 };
+
+const RadioWrapper = styled.div`
+  transition: all 0.3s ease;
+  :hover {
+    background-color: lightgray;
+  }
+`;
 
 const StyledClose = styled.div`
   cursor: pointer;

@@ -1,7 +1,7 @@
-import axios from "axios";
 import React from "react";
 import { FileWithPath } from "react-dropzone";
 import styled from "styled-components";
+import excelMock from "../service/mock/excelMock";
 import Dropzone from "./Dropzone";
 import ExcelGrid from "./ExcelGrid";
 
@@ -24,14 +24,17 @@ const DropAndViewGto: React.FC = () => {
     setFilesState(FilesState.UPLOADING);
     await Promise.all(
       files.map(async (file) => {
-        const fileData = new FormData();
+        // const fileData = new FormData();
 
-        fileData.append("file", file, file.name);
+        // fileData.append("file", file, file.name);
 
-        const { data: responseData } = await axios.post(
-          "/api/uploadGto",
-          fileData
-        );
+        // const { data: responseData } = await axios.post(
+        //   "/api/uploadGto",
+        //   fileData
+        // );
+
+        //@ts-expect-error
+        const responseData: Record<string, string | number>[] = excelMock;
 
         setExcelData(
           responseData.map((row: Record<string, string | number>) =>
